@@ -3,7 +3,6 @@ import styles from "../../styles/pagination.module.css";
 const Pagination = ({
   totalPages,
   currentPage,
-  setCurrentPage,
   hundlePageClic,
   hundleNextPage,
   hundlePrevPage,
