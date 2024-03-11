@@ -1,14 +1,11 @@
-import NewsBanner from "../../components/NewsBanner/NewsBanner";
 import styles from "../../styles/main.module.css";
-import {getCategories, getNews} from "../../api/apiNews";
-import NewsList from "../../components/NewsList/NewsList";
-import Pagination from "../../components/Pagination/Pagination";
-import Categories from "../../components/Categories/Categories";
-import Search from "../../components/Search/Search";
+import {getNews} from "../../api/apiNews";
 import {useDebounce} from "../../helpers/hooks/useDebounce";
-import {PAGE_SIZE, TOTAL_PAGES} from "../../constants/constants";
+import {PAGE_SIZE} from "../../constants/constants";
 import {useFetch} from "../../helpers/hooks/useFetch";
 import {useFilteres} from "../../helpers/hooks/useFilters";
+import LatestNews from "../../components/LatestNews/LatestNews";
+import NewsByFilter from "../../components/NewsByFilter/NewsByFilter";
 
 const Main = () => {
   const {filteres, changeFilteres} = useFilteres({
@@ -23,59 +20,16 @@ const Main = () => {
     ...filteres,
     keywords: debounceKeywords,
   });
-  const {data: dataCategories} = useFetch(getCategories);
-  const hundleNextPage = () => {
-    if (filteres.page_number < TOTAL_PAGES) {
-      changeFilteres("page_number", filteres.page_number + 1);
-    }
-  };
-  const hundlePrevPage = () => {
-    if (filteres.page_number > 1) {
-      changeFilteres("page_number", filteres.page_number - 1);
-    }
-  };
-  const hundlePageClic = (pageNumber) => {
-    changeFilteres("page_number", pageNumber);
-  };
 
   return (
     <main className={styles.main}>
-      {dataCategories ? (
-        <Categories
-          categories={dataCategories.categories}
-          setSelectedCategory={(category) =>
-            changeFilteres("category", category)
-          }
-          selectedCategory={filteres.category}
-        />
-      ) : null}
+      <LatestNews isLoading={isLoading} banners={data && data.news} />
 
-      <Search
-        keywords={filteres.keywords}
-        setKeywords={(keywords) => changeFilteres("keywords", keywords)}
-      />
-
-      <NewsBanner
+      <NewsByFilter
+        news={data?.news}
         isLoading={isLoading}
-        item={data && data.news && data.news[0]}
-      />
-
-      <Pagination
-        totalPages={TOTAL_PAGES}
-        currentPage={filteres.page_number}
-        hundleNextPage={hundleNextPage}
-        hundlePrevPage={hundlePrevPage}
-        hundlePageClic={hundlePageClic}
-      />
-
-      <NewsList isLoading={isLoading} news={data?.news} />
-
-      <Pagination
-        totalPages={TOTAL_PAGES}
-        currentPage={filteres.page_number}
-        hundleNextPage={hundleNextPage}
-        hundlePrevPage={hundlePrevPage}
-        hundlePageClic={hundlePageClic}
+        filteres={filteres}
+        changeFilteres={changeFilteres}
       />
     </main>
   );
