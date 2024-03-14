@@ -1,13 +1,26 @@
-import {getCategories} from "../../api/apiNews";
-import {TOTAL_PAGES} from "../../constants/constants";
+import {getNews} from "../../api/apiNews";
+import {PAGE_SIZE, TOTAL_PAGES} from "../../constants/constants";
+import {useDebounce} from "../../helpers/hooks/useDebounce";
 import {useFetch} from "../../helpers/hooks/useFetch";
+import {useFilteres} from "../../helpers/hooks/useFilters";
 import styles from "../../styles/newsbyfilter.module.css";
 import NewsFilter from "../NewsFilter/NewsFilter";
-import NewsListWithSkeleton from "../NewsList/NewsList";
-import Pagination from "../Pagination/Pagination";
+import NewsList from "../NewsList/NewsList";
+import PaginationWrapper from "../PaginationWrapper/PaginationWrapper";
 
-const NewsByFilter = ({filteres, changeFilteres, isLoading, news}) => {
-  const {data: dataCategories} = useFetch(getCategories);
+const NewsByFilter = () => {
+  const {changeFilteres, filteres} = useFilteres({
+    page_number: 1,
+    page_size: PAGE_SIZE,
+    category: null,
+    keywords: "",
+  });
+
+  const debounceKeywords = useDebounce(filteres.keywords, 1500);
+  const {data, isLoading} = useFetch(getNews, {
+    ...filteres,
+    keywords: debounceKeywords,
+  });
   const hundleNextPage = () => {
     if (filteres.page_number < TOTAL_PAGES) {
       changeFilteres("page_number", filteres.page_number + 1);
@@ -25,23 +38,17 @@ const NewsByFilter = ({filteres, changeFilteres, isLoading, news}) => {
     <section className={styles.section}>
       <NewsFilter filteres={filteres} changeFilteres={changeFilteres} />
 
-      <Pagination
+      <PaginationWrapper
+        top
+        bottom
         totalPages={TOTAL_PAGES}
         currentPage={filteres.page_number}
         hundleNextPage={hundleNextPage}
         hundlePrevPage={hundlePrevPage}
         hundlePageClic={hundlePageClic}
-      />
-
-      <NewsListWithSkeleton isLoading={isLoading} news={news} />
-
-      <Pagination
-        totalPages={TOTAL_PAGES}
-        currentPage={filteres.page_number}
-        hundleNextPage={hundleNextPage}
-        hundlePrevPage={hundlePrevPage}
-        hundlePageClic={hundlePageClic}
-      />
+      >
+        <NewsList isLoading={isLoading} news={data?.news} />
+      </PaginationWrapper>
     </section>
   );
 };
