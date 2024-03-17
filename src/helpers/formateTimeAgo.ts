@@ -1,4 +1,4 @@
-export const formateTimeAgo = (dateStirng) => {
+export const formateTimeAgo = (dateStirng:string) => {
   const now = new Date();
   const date = new Date(dateStirng);
   const secondPast = (now.getTime() - date.getTime()) / 1000;
@@ -14,6 +14,6 @@ export const formateTimeAgo = (dateStirng) => {
   }
   if (secondPast > 86400) {
     const day = Math.floor(secondPast / 86400);
-    return (day = 1 ? `${day} day ago ` : `${day} days ago`);
+    return (day === 1 ? `${day} day ago ` : `${day} days ago`);
   }
 };
