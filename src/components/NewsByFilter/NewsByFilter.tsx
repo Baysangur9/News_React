@@ -9,6 +9,8 @@ import NewsFilter from "../NewsFilter/NewsFilter";
 import NewsList from "../NewsList/NewsList";
 import PaginationWrapper from "../PaginationWrapper/PaginationWrapper";
 
+
+
 const NewsByFilter = () => {
   const {changeFilteres, filteres} = useFilteres({
     page_number: 1,
@@ -37,7 +39,7 @@ const NewsByFilter = () => {
   };
   return (
     <section className={styles.section}>
-      <NewsFilter filteres={filteres} changeFilteres={changeFilteres} />
+      <NewsFilter  filteres={filteres} changeFilteres={changeFilteres} />
 
       <PaginationWrapper
         top
