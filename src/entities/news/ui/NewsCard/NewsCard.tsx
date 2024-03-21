@@ -2,13 +2,15 @@ import { formateTimeAgo } from "@/shared/helpers/formateTimeAgo";
 import styles from "./newscard.module.css";
 import { INews } from "@/entities/news/modal/types";
 import Image from "@/shared/ui/Image/Image";
+import { ReactNode } from "react";
 
 interface Props {
   item: INews;
-  type:'banner' | 'item'
+  type:'banner' | 'item',
+  viewNewsSlot?: (news: INews) => ReactNode;
 }
 
-const NewsCard = ({item, type = 'item'}: Props) => {
+const NewsCard = ({item, type = 'item', viewNewsSlot}: Props) => {
   return (
     <li className={`${styles.card} ${type === 'banner' && styles.banner}`}>
       {type === 'banner' ? <Image image={item?.image} /> :
@@ -24,6 +26,8 @@ const NewsCard = ({item, type = 'item'}: Props) => {
           {formateTimeAgo(item.published)} by {item.author}
         </p>
       </div>
+
+      {viewNewsSlot ? viewNewsSlot(item) : null}
     </li>
   );
 };
