@@ -7,7 +7,7 @@ import { useTheme } from "../../../app/providers/ThemeProvider";
 
 
 const MainPage = () => {
-  const {isDark} = useTheme()
+  const {} = useTheme()
   return (
     <main className={styles.main}>
       <LatestNews />

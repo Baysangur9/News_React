@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setNews } from "../modal/newsSlice";
 import { ParamsType } from "@/shared/interfaces";
 import { NewsApiResponce } from "..";
@@ -8,11 +8,11 @@ const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL;
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
 export const newsApi = createApi({
-  reducerPath: 'newsApi',
+  reducerPath: "newsApi",
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   endpoints: (builder) => ({
     getNews: builder.query<NewsApiResponce, ParamsType>({
-      keepUnusedDataFor:0,
+      keepUnusedDataFor: 0,
       query: (params) => {
         const {
           page_number = 1,
@@ -21,7 +21,7 @@ export const newsApi = createApi({
           keywords,
         } = params || {};
         return {
-          url: 'search',
+          url: "search",
           params: {
             apiKey: API_KEY,
             page_number,
@@ -29,29 +29,26 @@ export const newsApi = createApi({
             category,
             keywords,
           },
-        }
+        };
       },
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const result = await queryFulfilled;
         const data = result.data;
 
         dispatch(setNews(data.news));
-      }
-
+      },
     }),
-
     getLatestNews: builder.query<NewsApiResponce, null>({
       query: () => {
         return {
-          url: 'latest-news',
+          url: "latest-news",
           params: {
             apiKey: API_KEY,
           },
-        }
+        };
       },
     }),
   }),
-})
+});
 
-
-export const { useGetNewsQuery, useGetLatestNewsQuery } = newsApi
+export const { useGetNewsQuery, useGetLatestNewsQuery } = newsApi;
