@@ -1,19 +1,16 @@
-import { useAppDispatch, useAppSelector } from "@/app/appStore";
-import NewsList from "@/widgets/news/ui/NewsList/NewsList";
-import PaginationWrapper from "@/features/pagination/ui/Pagination/Pagination";
-import { TOTAL_PAGES } from "@/shared/constants/constants";
+import { useAppSelector } from "@/app/appStore";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useGetNewsQuery } from "@/entities/news/api/newsApi";
-import { setFilteres } from "@/entities/news/modal/newsSlice";
 import styles from "./newsbyfilter.module.css";
-import NewsFilter from "../NewsFilter/NewsFilter";
+import { NewsFilter } from "@/widgets/news/ui";
+import NewsListWithPagination  from "@/pages/main/ui/NewsListWithPagination/NewsListWithPagination";
+import { useGetCategoriesQuery } from "@/entities/category/api/categoriesApi";
 
 
 
 
 const NewsByFilter = () => {
 
-  const dispatch = useAppDispatch()
 
   const filteres = useAppSelector((state) => state.news.filteres);
   const news = useAppSelector((state) => state.news.news);
@@ -23,34 +20,16 @@ const NewsByFilter = () => {
     ...filteres,
     keywords: debounceKeywords,
   })
-  const hundleNextPage = () => {
-    if (filteres.page_number < TOTAL_PAGES) {
-      dispatch(setFilteres({key: "page_number", value: filteres.page_number + 1}))
-    }
-  };
-  const hundlePrevPage = () => {
-    if (filteres.page_number > 1) {
-      dispatch(setFilteres({key: "page_number", value: filteres.page_number - 1}))
-    }
-  };
-  const hundlePageClic = (pageNumber:number) => {
-    dispatch(setFilteres({key: "page_number", value: pageNumber}))
-  };
+
+  const {data} = useGetCategoriesQuery(null)
+
   return (
     <section className={styles.section}>
-      <NewsFilter  filteres={filteres} />
+      <NewsFilter  filteres={filteres} categories={data?.categories || []} />
 
-      <PaginationWrapper
-        top
-        bottom
-        totalPages={TOTAL_PAGES}
-        currentPage={filteres.page_number}
-        hundleNextPage={hundleNextPage}
-        hundlePrevPage={hundlePrevPage}
-        hundlePageClic={hundlePageClic}
-      >
-        <NewsList isLoading={isLoading} news={news} />
-      </PaginationWrapper>
+
+
+      <NewsListWithPagination isLoading={isLoading} filteres={filteres} news={news} />
     </section>
   );
 };

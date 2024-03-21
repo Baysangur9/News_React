@@ -1,5 +1,6 @@
-import BannerList from "./BannersList/BannerList";
+import NewsFilter from "./NewsFilter/NewsFilter";
 import NewsList from "./NewsList/NewsList";
 
 
-export {BannerList, NewsList}
+
+export { NewsList, NewsFilter}
