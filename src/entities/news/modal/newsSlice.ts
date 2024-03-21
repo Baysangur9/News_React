@@ -8,6 +8,7 @@ import { INews } from "./types"
 interface State {
   news: INews[],
   filteres:IFilteres,
+  currentNews: INews | null
 }
 
 const initialState: State = {
@@ -17,7 +18,8 @@ const initialState: State = {
     page_size: PAGE_SIZE,
     category: null,
     keywords: "",
-  }
+  },
+  currentNews: null
 }
 
 export const newsSlice = createSlice({
@@ -27,6 +29,9 @@ export const newsSlice = createSlice({
     setNews: (state, action: PayloadAction<INews[]>) => {
       state.news = action.payload
     },
+    setCurrentNews: (state, action: PayloadAction<INews | null>) => {
+      state.currentNews = action.payload;
+    },
     setFilteres:(state, action: PayloadAction<{key:string, value: string | number | null}>) => {
       const {key, value} = action.payload
       state.filteres = {...state.filteres, [key]: value}
@@ -34,6 +39,6 @@ export const newsSlice = createSlice({
   },
 })
 
-export const { setNews, setFilteres } = newsSlice.actions
+export const { setNews, setFilteres, setCurrentNews } = newsSlice.actions
 
 export default newsSlice.reducer
